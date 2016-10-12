@@ -1,0 +1,279 @@
+<html>
+<head> </head>
+<style>
+    #stage
+    {
+        position: relative;
+    } 
+    
+    .cell
+    {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background-image: url(grassLong30x30.png);
+    }
+    
+    
+    
+</style>
+<body>
+
+<div id = "stage"> </div>
+    
+</body>
+<script>
+var stage = document.querySelector("#stage");
+    
+    
+var pattern = [
+    
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0]
+
+];
+    
+var mowerPosition = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1]
+    
+    
+    
+];
+
+//array I created for the flower - not sure if this is the right approach or not
+var flowerPosition = [
+    [0, 1, 0, 1, 0],
+    [0, 0, 1, 0, 0],
+    [1, 0, 0, 0, 1],
+    [0, 0, 0, 0, 1],
+    [1, 0, 1, 0, 0]
+    
+    
+    
+];
+
+
+var cellSize = 30;
+
+var ROWS = pattern.length;
+var COLUMNS = pattern[0].length;
+    
+var mowerX = mowerPosition.length -1;
+var mowerY = mowerPosition[0].length -1;
+
+    
+//trying to get the flower to show
+var flowerX = flowerPosition.length -1;
+var flowerY = flowerPosition[0].length -1;
+
+
+    
+
+
+for(var i=0; i < ROWS; i++)
+{
+    for (var j=0; j < COLUMNS; j++)
+    
+        {
+        var cell = document.createElement("div");
+        cell.setAttribute("class", "cell");
+        stage.appendChild(cell);
+        
+        cell.style.top = i*cellSize + "px";
+        cell.style.left = j*cellSize + "px";
+        
+        }
+}
+    
+cell.style.top = mowerY * cellSize + "px";
+cell.style.left = mowerX * cellSize + "px";
+cell.style.backgroundImage = "url(mower30x30.png)";
+//code to get flower to show in the cells
+
+
+///
+    
+document.addEventListener("keydown", keydownHandler, false);
+    
+var UP = 38;
+var DOWN = 40;
+var RIGHT = 39;
+var LEFT = 37;
+    
+    
+function keydownHandler(event)   
+{
+    switch(event.keyCode)
+    {
+        case UP:
+            
+            mowerPosition[mowerY][mowerX] = 0;
+            pattern[mowerY][mowerX] = 1;
+            
+            mowerY--;
+            //this is so the mower doesn't get stuck on the edge
+            if(mowerY >= 0)
+            {
+            mowerPosition[mowerY][mowerX] = 1;
+            }
+            else
+            {
+                mowerY++;
+                mowerPosition [mowerY][mowerX] = 1;
+            }
+            break;
+            
+        case DOWN:
+            mowerPosition[mowerY][mowerX] = 0;
+            pattern[mowerY][mowerX] = 1;
+            mowerY++;
+            if (mowerY < COLUMNS)
+            
+            {
+              mowerPosition[mowerY][mowerX] = 1;  
+            }
+            else
+            {
+                mowerY--;
+                mowerPosition[mowerY][mowerX] = 1;
+            }
+            
+            break;
+            
+        case RIGHT:
+            mowerPosition[mowerY][mowerX] = 0;
+            pattern[mowerY][mowerX] = 1;
+            mowerX++;
+            
+            if(mowerX < ROWS)
+            
+            {
+               mowerPosition[mowerY][mowerX] = 1; 
+            }
+            else
+            {
+                mowerX--;
+                mowerPosition[mowerY][mowerX] = 1;
+            }
+            
+            break;
+        
+        case LEFT:
+            mowerPosition[mowerY][mowerX]= 0;
+            pattern[mowerY][mowerX] = 1;
+            mowerX--;
+            
+            if(mowerX >= 0)
+            
+            {
+                mowerPosition[mowerY][mowerX] = 1;
+            }
+            else
+            {
+                mowerX++;
+                mowerPosition[mowerY][mowerX] = 1;
+            }
+          
+            break;
+    }
+    
+    render();
+}
+    
+///
+//copy and paste from for loop above.. take away the "var".    
+function render()
+{
+    
+    
+    for(i=0; i < ROWS; i++)
+    {
+    for (j=0; j < COLUMNS; j++)
+    
+        {
+        var cell = document.createElement("div");
+        cell.setAttribute("class", "cell");
+        stage.appendChild(cell);
+        //trying to show flower on the map using an if statement
+
+            
+        if(mowerPosition[i][j] === 1)
+        {
+            cell.style.backgroundImage = "url(mower30x30.png)";
+        }
+            else if(pattern[i][j] === 1)
+            {
+                
+                cell.style.backgroundImage = "url(grassShort30x30.png)";
+            }
+            else
+            {
+                cell.style.backgroundImage = "url(grassLong30x30.png)";
+            }
+        if(flowerPosition[i][j] === 1)
+        {
+        cell.style.top = flowerY * cellSize + "px";
+        cell.style.left = flowerX * cellSize + "px";
+        cell.style.backgroundImage = "url(flower30x30.png)";
+        }
+        
+        cell.style.top = i*cellSize + "px";
+        cell.style.left = j*cellSize + "px";
+        
+        }
+    }
+    
+    output.innerHTML = gameMessage;
+    
+}
+
+///
+
+function endGame()
+{
+    for( i = 0; i < ROWS; i++ )
+    {
+        for(j = 0; j < COLUMNS; j++ )
+        {
+            numberOfVisitedCell += pattern[i][j];
+        }
+    }
+    if (numberOfVisitedCell > ROWS * COLUMNS )
+    {
+        endGame();
+    }
+    else
+    {
+        numberOfVisitedCell = 1;
+    }
+    
+    if(mowerPosition[i][j] === 1)
+    {
+        render();
+    }
+    else if(mowerPosition[1] === flowerPosition)
+    {
+        gameMessage = "You cut your mom's flowers! You are grounded!";
+        
+    }
+    else
+    {
+        endGame();
+    }
+}
+</script>
+
+
+
+
+
+
+
+</html>
